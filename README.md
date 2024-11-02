@@ -1,7 +1,14 @@
-![Guaranteed-to_do_absolutely_nothing_that_you'd_want_it_to_do-333](https://github.com/user-attachments/assets/54c73cac-5e1f-42c9-a6c0-291677b15df9)
 # Lua-Library
 i cant even read it, and i wrote it (did i even write it??????)
 this should be illegal 
+
+
+<img alt="Static Badge" src="https://img.shields.io/badge/GUARANTEED-TO%20DO%20ABSOLUTELY%20NOTHING%20YOU%20WANT%20IT%20TO-green?style=for-the-badge">
+  
+  <img alt="Static Badge" src="https://img.shields.io/badge/GUARANTEED-TO%20FILL%20YOUR%20CONSOLE%20WITH%20ERRORS-red?style=for-the-badge">
+  
+  <img alt="Static Badge" src="https://img.shields.io/badge/LITERALLY-UNREADABLE%20CODE-%234287f5?style=for-the-badge">
+
 
 
 
