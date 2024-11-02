@@ -1,259 +1,166 @@
--- idk where to write these so ill just do it here, commands
+-- Constants/variables
+local MAX_DISPLAY = 10
+local currentHighlightIndex = 1 -- This will track the highlight
+local currentTabIndexStart = 1 -- This will track the starting index of the displayed tabs
+local labels = {}
 
+-- Create the ScreenGui
+local Player = game.Players.LocalPlayer
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
 
+local highlight = Instance.new("Frame") -- Don't use global variables
 
+-- Create a Frame for holding the commands
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 200, 0, MAX_DISPLAY * 25 + 5) -- Adjust height for displayed items
+Frame.Position = UDim2.new(0.5, -100, 0.5, -150) -- Adjust position to accommodate context box
+Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Frame.Parent = ScreenGui
 
+-- Create a TextBox for showing the command context
+local contextBox = Instance.new("TextLabel")
+contextBox.Size = UDim2.new(0, 200, 0, 50) -- Size of the context box
+contextBox.Position = UDim2.new(0.5, -100, 0.5, 130)
+contextBox.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+contextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+contextBox.TextSize = 14
+contextBox.Text = "Stage One"
+contextBox.Parent = ScreenGui
 
-
-local UserInputService = game:GetService("UserInputService")
-local pathtocommands = script.Parent.list
-local current = 1
-local amountofcommands = 1
-
--- yes or no stuff
-
-local iscommandboxopen = false
-
-
--- images
-
-local tickimage = "http://www.roblox.com/asset/?id=3926305904"
-local noimage = "http://www.roblox.com/asset/?id=3926305904"
-local arrowimage = "http://www.roblox.com/asset/?id=6798365555"
-
-
--- tween
-
-local TweenService = game:GetService("TweenService")
-
--- stuff idk what they mean 
-
-
-local EnterPressedEvent = Instance.new("BindableEvent")
-local EnterPressed = false
-
-local function onEnterPressed(input)
-	if input.KeyCode == Enum.KeyCode.Return or input.KeyCode == Enum.KeyCode.KeypadEnter then
-		EnterPressed = true
-		EnterPressedEvent:Fire()
-	end
-end
-
--- where the stuff that idk what they do end
-
--- paths
-
-local label = script.Parent.list.picker
-local commandbox = script.Parent.command
-local endingPosition = pathtocommands:FindFirstChild("command"..current)
-local cmdname = pathtocommands:FindFirstChild("command"..current).cmdname
-local valuetext = pathtocommands:FindFirstChild("command"..current).valuetext
-local imagelabel = pathtocommands:FindFirstChild("command"..current).image
-
-local function updatethepaths()
-	cmdname = pathtocommands:FindFirstChild("command"..current).cmdname
-	valuetext = pathtocommands:FindFirstChild("command"..current).valuetext
-	imagelabel = pathtocommands:FindFirstChild("command"..current).image
-	commandtype = "folder"
-	local typenumber = pathtocommands:FindFirstChild("command"..current).typevalue.Value
-	if typenumber == 0 then
-		commandtype = "folder"
-	elseif typenumber == 1 then
-		commandtype = "slider"
-	elseif typenumber == 2 then
-		commandtype = "toggle"
-	elseif typenumber == 3 then
-		commandtype = "button"
-	end
-	--print("THIS IS A "..commandtype)
-end
-
-
-local function tween()
-	local tween = TweenService:Create(label, TweenInfo.new(0.1), { Position = endingPosition.Position})
-	tween:Play()
-end
-tween()
-label.Visible = true
-
--- how many children
-
-
-local function countthem()
-	amountofcommands = 0
-	for _,v in pairs(pathtocommands:GetChildren()) do
-		amountofcommands = amountofcommands + 1
-	end
-	amountofcommands = amountofcommands - 1
+-- Define a table of commands with extra context and actions
+local commands = {
+	{ 
+		name = "Command 1",
+		context = "This will execute Command 1",
+		action = function() print("Executed Command 1") end
+	},
 	
+	{ 
+		name = "Command 2",
+		context = "This will execute Command 2",
+		action = function() print("Executed Command 2") end
+	},
+	
+	{ 
+		name = "Command 3",
+		context = "This will execute Command 3",
+		action = function() print("Executed Command 3") end
+	},
+	
+	{ name = "Command 4",
+		context = "This will execute Command 4",
+		action = function() print("Executed Command 4") end
+	},
+	
+	{ name = "Command 5",
+		context = "This will execute Command 5",
+		action = function() print("Executed Command 5") end 
+	},
+	
+	{ name = "Command 6",
+		context = "This will execute Command 6",
+		action = function() print("Executed Command 6") end
+	},
+	
+	{ name = "Command 7",
+		context = "This will execute Command 7",
+		action = function() print("Executed Command 7") end
+	},
+	
+	{ name = "Command 8",
+		context = "This will execute Command 8",
+		action = function() print("Executed Command 8") end
+	},
+	
+	{ name = "Command 9",
+		context = "This will execute Command 9",
+		action = function() print("Executed Command 9") end
+	},
+	
+	{ name = "Command 10",
+		context = "This will execute Command 10",
+		action = function() print("Executed Command 10") end
+	},
+	
+	{ name = "Command 11",
+		context = "This will execute Command 11",
+		action = function() print("Executed Command 11") end 
+	},
+}
+
+-- Create TextLabels for commands
+local function createLabels()
+	for i = 1, MAX_DISPLAY do
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1, 0, 0, 25) -- Full width, height of 25
+		label.Position = UDim2.new(0, 0, 0, (i - 1) * 25) -- Stack vertically
+		label.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+		label.TextColor3 = Color3.fromRGB(255, 255, 255)
+		label.TextSize = 16
+		label.Parent = Frame
+		table.insert(labels, label)
+	end
+
+	-- Create a highlight/selector frame (I am not very proud of this)
+	
+	highlight.Size = UDim2.new(1, 0, 0, 25)
+	highlight.Position = UDim2.new(0, 0, 0, 0) -- Start at the first position
+	highlight.BackgroundColor3 = Color3.fromRGB(234, 234, 234)
+	highlight.BackgroundTransparency = 0.5
+	highlight.Parent = Frame
 end
-countthem() 
 
--- notifications (currently not working)
-
-local amountofnotifications = 0
-
-local function sendnotification(message, amount)
-	wait(amount)
-	local base = script.Parent.notification
-	amountofnotifications = amountofnotifications + 1
-	local thisnumber = amountofnotifications
-	local newone = base:Clone() newone.Parent = base.Parent	newone.Name = "notification"..amountofnotifications newone.notificationtext.Text = message
-	local lastpos
-		if amountofnotifications - 1 ~= 0 then
-			local last_position = base.Parent:FindFirstChild("notification"..amountofnotifications - 1).Position
-			lastpos = last_position
-			newone.Position = UDim2.new(lastpos.X, lastpos.Y + UDim.new(0, 65))
+-- Update the TextLabel text and highlight by currentHighlightIndex
+local function updateLabels()
+	for i, label in ipairs(labels) do
+		local cmdIndex = currentTabIndexStart + i - 1 -- Adjust for current displayed tab
+		if cmdIndex <= #commands then
+			label.Text = commands[cmdIndex].name -- Display only the command name
 		else
-			local old_position = base.Position
-			lastpos = old_position
-			newone.Position = UDim2.new(old_position.X, old_position.Y)
+			label.Text = "" -- Clear label if out of bounds 
+			--label.Text = "OutOfSight" -- For debugging purposes
 		end
-		newone.Visible = true newone.flash.Visible = true
-		wait(.3)
-		newone.flash.Visible = false
-		local startTime = os.clock()
-		while newone.Visible do
-			if amountofnotifications < thisnumber then
-				thisnumber = thisnumber - 1
-				newone.Position = UDim2.new(newone.Position.X, newone.Position.Y - UDim.new(0, 65))
-			end
-		if os.clock() - startTime >= 3 then
-			amountofnotifications = amountofnotifications - 1
-			newone.Visible = false
-			newone:Destroy()
-			break 
-		end
-		wait()
+	end
+
+	-- Update highlight position based on currentHighlightIndex
+	highlight.Position = UDim2.new(0, 0, 0, (currentHighlightIndex - 1) * 25)
+
+	-- Update the context box with the current command context
+	local contextIndex = currentTabIndexStart + currentHighlightIndex - 1
+	if commands[contextIndex] then
+		contextBox.Text = commands[contextIndex].context -- Update context display
+	else
+		contextBox.Text = "" -- Clear the context box if out of sight
 	end
 end
 
--- lemme just do this real quick
+-- Handle Input for navigating the list
+local UserInputService = game:GetService("UserInputService")
 
-pathtocommands.Parent.path.currentthing.Text = current.."/"..amountofcommands -- corrects the position of the thingy
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
 
--- update duh image
-
-local function imagechange()
-	if commandtype == "folder" then
-		imagelabel.Image = arrowimage
-		imagelabel.Visible = true
-		valuetext.Visible = false	
-	elseif commandtype == "slider" then
-		imagelabel.Visible = false
-		valuetext.Visible = true
-	elseif commandtype == "toggle" then
-		imagelabel.Visible = false
-		valuetext.Visible = true
-		valuetext.Text = "OFF"
-	end
-end
-
-local function debugt()
-	local oldcurrent = current
-	local number = 0
-	while number ~= amountofcommands do
-		number = number + 1
-		current = number
-		updatethepaths()
-		imagechange()
-	end
-	current = oldcurrent
-	--sendnotification("fixed it")
-end
-debugt()
-
--- commandbox
-
-function commandboxopen(slider)
-	commandbox.textinput:CaptureFocus()
-	wait()
-	commandbox.textinput.Text = ""
-	iscommandboxopen = true
-	commandbox.Visible = true
-	local connection
-	connection = EnterPressedEvent.Event:Connect(function()
-		commandbox.Visible = false
-		iscommandboxopen =false
-		connection:Disconnect()
-		if slider == true then
-			if tonumber(commandbox.textinput.Text) ~= nil then
-				valuetext.Text = "< "..tonumber(commandbox.textinput.Text).." >" 
-				pathtocommands:FindFirstChild("command"..current).typevalue.amount.Value = commandbox.textinput.Text
-			elseif commandbox.textinput.Text == "" then
-				sendnotification("that was empty dude", 0)
-			else
-				sendnotification("you can only use numbers", 0)
-			end
-		else
-			
+	if input.KeyCode == Enum.KeyCode.KeypadTwo then -- Keypad 2 for down
+		if currentHighlightIndex < MAX_DISPLAY then
+			currentHighlightIndex = currentHighlightIndex + 1
+		elseif currentTabIndexStart + MAX_DISPLAY - 1 < #commands then
+			currentTabIndexStart = currentTabIndexStart + 1 -- Shift displayed tabs down
 		end
-	end)
-end
-
-
--- keyboard input
-
-UserInputService.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.Keyboard then
-		if input.KeyCode == Enum.KeyCode.KeypadTwo and iscommandboxopen == false then
-				if current >= amountofcommands then
-					current = 1
-					endingPosition = pathtocommands:FindFirstChild("command"..current)
-					pathtocommands.Parent.path.currentthing.Text = current.."/"..amountofcommands
-					tween() updatethepaths() imagechange() 
-					--print(current)
-				else
-					current = current + 1
-					endingPosition = pathtocommands:FindFirstChild("command"..current)
-					pathtocommands.Parent.path.currentthing.Text = current.."/"..amountofcommands
-					tween() updatethepaths() imagechange() 
-					--print(current)
-				end
-		elseif input.KeyCode == Enum.KeyCode.KeypadEight and iscommandboxopen == false then
-				if current <= 1 then
-					current = amountofcommands
-					endingPosition = pathtocommands:FindFirstChild("command"..current)
-					pathtocommands.Parent.path.currentthing.Text = current.."/"..amountofcommands
-					tween() updatethepaths() imagechange() 
-					--print(current)
-
-				else
-					current = current - 1
-					endingPosition = pathtocommands:FindFirstChild("command"..current)
-					pathtocommands.Parent.path.currentthing.Text = current.."/"..amountofcommands
-					tween() updatethepaths() imagechange() 
-					--print(current)
-				end
-		elseif input.KeyCode == Enum.KeyCode.KeypadSix and iscommandboxopen == false then
-				if commandtype == "slider" then
-					local value = pathtocommands:FindFirstChild("command"..current).typevalue.amount.Value
-					pathtocommands:FindFirstChild("command"..current).typevalue.amount.Value = value + 1
-					--print(value)
-					valuetext.Text = "< "..value.." >"
-				end
-		elseif input.KeyCode == Enum.KeyCode.KeypadFour and iscommandboxopen == false then
-				if commandtype == "slider" then
-					local value = pathtocommands:FindFirstChild("command"..current).typevalue.amount.Value
-					pathtocommands:FindFirstChild("command"..current).typevalue.amount.Value = value - 1
-					--print(value)
-					valuetext.Text = "< "..value.." >"
-				end
-		elseif input.KeyCode == Enum.KeyCode.U and iscommandboxopen == false then
-			commandboxopen(false)
-		elseif input.KeyCode == Enum.KeyCode.KeypadFive then
-			if iscommandboxopen == false and commandtype == "slider" then
-				commandboxopen(true)
-			elseif iscommandboxopen == false and commandtype == "toggle" then
-				if valuetext.Text == "OFF" then
-					valuetext.Text = "ON"
-				else
-					valuetext.Text = "OFF"
-				end
-			end
+	elseif input.KeyCode == Enum.KeyCode.KeypadEight then -- Keypad 8 for up
+		if currentHighlightIndex > 1 then
+			currentHighlightIndex = currentHighlightIndex - 1
+		elseif currentTabIndexStart > 1 then
+			currentTabIndexStart = currentTabIndexStart - 1 -- Shift displayed tabs up
+		end
+	elseif input.KeyCode == Enum.KeyCode.KeypadFive then -- Keypad 5 to execute/select
+		if commands[currentTabIndexStart + currentHighlightIndex - 1] ~= nil then
+			commands[currentTabIndexStart + currentHighlightIndex - 1].action() -- Execute the selected command
 		end
 	end
+
+	updateLabels() -- Update the labels and context box
 end)
 
-
-UserInputService.InputBegan:Connect(onEnterPressed) -- i will replace this soon
+createLabels()
+updateLabels()
